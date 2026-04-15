@@ -4,6 +4,7 @@
 #include <DHT.h>          //Library for using DHT sensor 
  
 #define DHTPIN 8
+#define LEDAN 4
 #define DHTTYPE DHT11
  
 struct can_frame canMsg;
@@ -23,6 +24,8 @@ void setup()
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //Sets CAN at speed 500KBPS and Clock 8MHz
   mcp2515.setNormalMode();
+  pinMode(LEDAN, OUTPUT);
+
 }
  
  
@@ -41,6 +44,16 @@ void loop()
   canMsg.data[5] = 0x00;
   canMsg.data[6] = 0x00;
   canMsg.data[7] = 0x00;
+  digitalWrite(LEDAN, HIGH);  
+  if (t >= 45) {
+  // change state of the LED by setting the pin to the HIGH voltage level
+  delay(1000); 
+  }
+  else {
+  digitalWrite(LEDAN, LOW);   // change state of the LED by setting the pin to the LOW voltage level
+  delay(1000); 
+  }
+
   Serial.println((String)"Send HumidtyValue:" + h + ", Temp:" + t);
   mcp2515.sendMessage(&canMsg);     //Sends the CAN message
   // delay(1000);                   // send with delay
